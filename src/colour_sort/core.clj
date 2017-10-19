@@ -3,7 +3,7 @@
             [quil.middleware :as m]))
 
 (defn setup []
-  (let [subject (q/load-image "bacon.jpg")
+  (let [subject (q/load-image "vangogh.jpg")
         pix (q/pixels subject)
         shuf (shuffle (vec pix))
         ]
@@ -14,12 +14,6 @@
     {:img subject
      }))
 
-(defn pairs [w h]
-
-  (rand-int w)
-  (rand-int h)
-  )
-
 (defn colour-dist [a b]
   (Math/sqrt 
     (+
@@ -29,12 +23,11 @@
 
 (defn adj-col [w h x y]
   (filterv (complement nil?)
-          (for [x' [-1 0 1] y' [-1 0 1]]
+          (for [x' [-2 -1 0 1 2] y' [-2 -1 0 1 2]]
             (if (= [0 0] [x' y'])
               nil
               (vector (mod (- x x') w) (mod (+ y y') h)))) ))
 
-(adj-col 300 300 (rand-int 50) (rand-int 50))
 
 (defn pos-score [img colour x y]
   (let [colour-dist (partial colour-dist colour)
@@ -54,8 +47,12 @@
       (let [x1 (rand-int (.-width img))
             y1 (rand-int (.-height img))
             col1 (q/get-pixel img x1 y1)
-            x2 (int (mod (+ x1 (q/random -150 150)) (.-width img)))
-            y2 (int (mod (+ y1 (q/random -150 150)) (.-height img)))
+            ; x2 (rand-int (.-width img))
+            x2 (int (mod (+ x1 (q/random -10 10)) (.-width img)))
+            ; x2 (int (mod (+ (q/random 0 0) (q/map-range (q/cos (+ (q/random 2) (/ (q/brightness col1) 13))) -1 1 0 (.-width img))) (.-width img)))
+            ; y2 (rand-int (.-height img))
+            y2 (int (mod (+ y1 (q/random -10 10)) (.-height img)))
+            ; y2 (int (mod (+ (q/random 0 0) (q/map-range (q/sin (+ (q/random 2) (/ (q/red col1) 9))) -1 1 0 (.-height img))) (.-height img)))
             col2 (q/get-pixel img x2 y2)
             ]
         ; if swapping is less jumbled than not swapping
@@ -93,12 +90,13 @@
   ;; (print state)
   (q/stroke 255)
   (q/fill 255)
+  ; (q/save "55000.png")
   (q/text (str (q/frame-count)) 20 20)
   )
 
 (q/defsketch colour-sort
   :title "Test"
-  :size [620 362]
+  :size [402 402]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
