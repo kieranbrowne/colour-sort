@@ -3,10 +3,11 @@
             [quil.middleware :as m]))
 
 (defn setup []
-  (let [palette (q/load-image "bacon.jpg")
-        subject (q/load-image "hands3.jpg")]
+  (let [palette (q/load-image "freud.jpg")
+        subject (q/load-image "hands8.jpg")]
         ; pix (q/pixels palette)
         ; shuf (shuffle (vec pix))
+    (q/resize palette (q/width) (q/height))
         
     (q/resize subject (.-width palette) (.-height palette))
     ; (dotimes [i (count pix)]
@@ -38,25 +39,53 @@
           (for [x' [-1 0 1] y' [-1 0 1]]
             (if (= [0 0] [x' y'])
               nil
-              (vector (mod (- x x') w) (mod (+ y y') h)))) ))
+              (vector (mod (- x x') w) (mod (+ y y') h))))))
+
+  
 
 
-(defn pos-score [img colour x y]
+(mapv #(map mod % [20 2])
+  (map #(map + %1 %2) [[1 2] [2 3]] (repeat [50 50])))
+
+(defn pairwise [fn & colls]
+  (if (coll? (-> colls first first))
+    (apply (partial mapv fn) colls)
+    (apply mapv (partial pairwise fn) colls)))
+
+
+(pairwise mod [[108 2]] [[100 100]])
+(pairwise mod [108 2] [100 100])
+  
+
+(vector 1 2)
+
+
+(defn pos-score [img kernel colour x y]
   (let [colour-dist (partial colour-dist' colour)
-        adj-col (partial adj-col (.-width img) (.-height img))
-        ; adj-col [[0 0]]
-        ]
+        ;; adj-col (partial adj-col (.-width img) (.-height img))
+        kernel
+        (mapv 
+          #(vector (mod (+ x (first %)) (.-width img))
+                   (mod (+ y (second %)) (.-height img)))
+          kernel)]
+        
     (reduce +
       (map #(let [[x y] %] (colour-dist (q/get-pixel img x y)))
-            (adj-col x y)))))
+            kernel))))
+
+(get-in (vec (range 100)) [10])
+
 
 
 
 (defn update-state [state]
   (let [img (:palette state)
         pix (q/pixels img)
-        image-score (partial pos-score (:subject state))
-        smooth-score (partial pos-score (:palette state))]
+        image-score (partial pos-score (:subject state) [[0 0]])
+        smooth-score (partial pos-score (:palette state) 
+                              (remove #{[0 0]} (for [x' [-9 -4 -2 -1 0 1 2 4 9] y' [9 -4 -2 -1 0 1 2 4 9]] [x' y'])))]
+                              
+        
 
     ;; make like the image
     (dotimes [i 2000]
@@ -64,10 +93,10 @@
             y1 (rand-int (.-height img))
             col1 (q/get-pixel img x1 y1)
             ;; x2 (rand-int (.-width img))
-            x2 (int (mod (+ x1 (q/random -20 20)) (.-width img)))
+            x2 (int (mod (+ x1 (q/random -80 80)) (.-width img)))
             ; x2 (int (mod (+ (q/random 0 0) (q/map-range (q/cos (+ (q/random 2) (/ (q/brightness col1) 13))) -1 1 0 (.-width img))) (.-width img)))
             ; y2 (rand-int (.-height img))
-            y2 (int (mod (+ y1 (q/random -20 20)) (.-height img)))
+            y2 (int (mod (+ y1 (q/random -80 80)) (.-height img)))
             ; y2 (int (mod (+ (q/random 0 0) (q/map-range (q/sin (+ (q/random 2) (/ (q/red col1) 9))) -1 1 0 (.-height img))) (.-height img)))
             col2 (q/get-pixel img x2 y2)]
             
@@ -87,10 +116,10 @@
             y1 (rand-int (.-height img))
             col1 (q/get-pixel img x1 y1)
             ; x2 (rand-int (.-width img))
-            x2 (int (mod (+ x1 (q/random -10 10)) (.-width img)))
+            x2 (int (mod (+ x1 (q/random -80 80)) (.-width img)))
             ; x2 (int (mod (+ (q/random 0 0) (q/map-range (q/cos (+ (q/random 2) (/ (q/brightness col1) 13))) -1 1 0 (.-width img))) (.-width img)))
             ; y2 (rand-int (.-height img))
-            y2 (int (mod (+ y1 (q/random -10 10)) (.-height img)))
+            y2 (int (mod (+ y1 (q/random -80 80)) (.-height img)))
             ; y2 (int (mod (+ (q/random 0 0) (q/map-range (q/sin (+ (q/random 2) (/ (q/red col1) 9))) -1 1 0 (.-height img))) (.-height img)))
             col2 (q/get-pixel img x2 y2)]
             
@@ -103,21 +132,6 @@
             img x2 y2 col1)
           (q/set-pixel 
             img x1 y1 col2))))
-
-          
-        
-        
-      
-
-    ; (q/background 0)
-
-    ; (aset pix a bcol)
-    ; (aset pix b acol)
-    ; (aset pix (rand-int (alength pix)) 0)
-
-
-    ; (q/set-pixel (:img state) (rand 30) (rand 30) 
-    ;              (q/color 255 0 0))
     (q/update-pixels img)
     state))
     
@@ -138,7 +152,7 @@
 
 (q/defsketch colour-sort
   :title "Test"
-  :size [687 800]
+  :size [640 858]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
