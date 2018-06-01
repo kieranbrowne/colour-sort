@@ -3,8 +3,8 @@
             [quil.middleware :as m]))
 
 (defn setup []
-  (let [palette (q/load-image "freud.jpg")
-        subject (q/load-image "hands8.jpg")]
+  (let [palette (q/load-image "bacon.jpg")
+        subject (q/load-image "hands3.jpg")]
         ; pix (q/pixels palette)
         ; shuf (shuffle (vec pix))
     (q/resize palette (q/width) (q/height))
@@ -44,20 +44,10 @@
   
 
 
-(mapv #(map mod % [20 2])
-  (map #(map + %1 %2) [[1 2] [2 3]] (repeat [50 50])))
-
 (defn pairwise [fn & colls]
   (if (coll? (-> colls first first))
     (apply (partial mapv fn) colls)
     (apply mapv (partial pairwise fn) colls)))
-
-
-(pairwise mod [[108 2]] [[100 100]])
-(pairwise mod [108 2] [100 100])
-  
-
-(vector 1 2)
 
 
 (defn pos-score [img kernel colour x y]
@@ -72,10 +62,6 @@
     (reduce +
       (map #(let [[x y] %] (colour-dist (q/get-pixel img x y)))
             kernel))))
-
-(get-in (vec (range 100)) [10])
-
-
 
 
 (defn update-state [state]
