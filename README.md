@@ -1,18 +1,12 @@
-# colour-sort
+# [Pixel Sorting Experiment](http://kieranbrowne.com/works/pixel-sorting/)
 
-A Quil sketch designed to ... well, that part is up to you.
-
-## Usage
-
-LightTable - open `core.clj` and press `Ctrl+Shift+Enter` to evaluate the file.
-
-Emacs - run cider, open `core.clj` and press `C-c C-k` to evaluate the file.
-
-REPL - run `(require 'colour-sort.core)`.
+![Vincent Van Gogh](http://kieranbrowne.com/images/pixel-sort-1.png)
+![Francis Bacon](http://kieranbrowne.com/images/pixel-sort-2.png)
+![Lucien Freud](http://kieranbrowne.com/images/pixel-sort-3.png)
 
 ## License
 
-Copyright © 2016 FIXME
+Copyright © 2016 Kieran Browne
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
