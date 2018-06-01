@@ -1,7 +1,7 @@
 # [Pixel Sorting Experiment](http://kieranbrowne.com/works/pixel-sorting/)
 
 ![Vincent Van Gogh](http://kieranbrowne.com/images/pixel-sort-1.png)
-![Francis Bacon](http://kieranbrowne.com/images/pixel-sort-2.png)
+<img src="http://kieranbrowne.com/images/pixel-sort-2.png"></img>
 ![Lucien Freud](http://kieranbrowne.com/images/pixel-sort-3.png)
 
 ## License
